@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout/main-layout">
+<head>
+    <title>Thymeleaf 예제</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<th:block layout:fragment="page-header">
+    <header class="masthead" style="background-image: url('/img/home-bg.jpg')">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h2>BlueCitron's Dev Log</h2>
+                        <span class="subheading">For Java, Node.js Developer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</th:block>
+
+<th:block layout:fragment="content">
+    <form id="createForm" th:action="@{/category/create}" th:method="post">
+        <input type="hidden" name="name">
+    </form>
+
+    <form id="updateForm" th:action="@{/category/update}" th:method="post">
+        <input type="hidden" name="name">
+        <input type="hidden" name="categoryId">
+    </form>
+
+    <form id="deleteForm" th:action="@{/category/delete}" th:method="post">
+        <input type="hidden" name="categoryId">
+    </form>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <input type="text" id="inputCategoryName" class="borderless-input" placeholder="카테고리 제목을 입력해주세요">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <table class="table" style="font-size: 14px;">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">순서</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">포스트</th>
+                        <th scope="col">생성일</th>
+                        <th scope="col">수정</th>
+                        <th scope="col">삭제</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <th scope="row" th:text="${category.id}"></th>
+                        <td th:text="${category.name}"></td>
+                        <td>12</td>
+                        <td th:text="${category.createdDate}"></td>
+                        <td class="edit-cell">
+                            <i class="fas fa-edit cursor-pointer" data-toggle="modal" data-target="#editModal"></i>
+                        </td>
+                        <td class="delete-cell">
+                            <i class="fas fa-trash cursor-pointer" data-toggle="modal" data-target="#deleteModal"></i>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">카테고리 수정</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="my-2">
+                        <h6>변경전 제목</h6>
+                        <input type="text" id="beforeName" class="borderless-input" value="Java" readonly>
+                    </div>
+                    <div class="my-2">
+                        <h6>변경할 제목</h6>
+                        <input type="text" id="afterName" class="borderless-input" placeholder="카테고리 제목">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnEdit" class="btn btn-sm btn-success">저장</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">카테고리 삭제</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="my-2">
+                        <h6>삭제할 카테고리 제목</h6>
+                        <input id="showDeleteCategoryName" type="text" class="borderless-input" readonly>
+                    </div>
+                    <p style="font-size:12px;">정말로 삭제하시겠습니까? 해당 카테고리의 모든 포스트들이 삭제됩니다.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnDelete" class="btn btn-sm btn-danger">삭제</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="page-custom-script">
+<script>
+    $(function() {
+        $('.edit-cell').click(function() {
+            var { categoryId, categoryName } = getCategoryFromTdCell(this);
+
+            $('#beforeName').val(categoryName);
+            $('#updateForm>input[name=categoryId]').val(categoryId);
+        });
+
+        $('#btnEdit').click(function(){
+            var afterName = $('#afterName').val();
+            $('#updateForm>input[name=name]').val(afterName);
+            $('#updateForm').submit();
+        });
+
+        $('.delete-cell').click(function() {
+            var { categoryId, categoryName } = getCategoryFromTdCell(this);
+
+            $('#deleteForm>input[name=categoryId]').val(categoryId);
+            $('#showDeleteCategoryName').val(categoryName);
+        });
+
+        $('#btnDelete').click(function() {
+            $('#deleteForm').submit();
+        });
+
+        $('#inputCategoryName').keyup(function(e) {
+            var { which } = e;
+            if (which === 13) {
+                var name = $(this).val();
+                $('#createForm>input[name=name]').val(name);
+                $('#createForm').submit();
+            }
+        });
+
+    });
+
+    function getCategoryFromTdCell(td) {
+        var tr = $(td).parent();
+        var categoryId = $(tr).children().eq(0).text();
+        var categoryName = $(tr).children().eq(1).text();
+        return { categoryId, categoryName };
+    }
+</script>
+</th:block>
+
+</body>
+</html>

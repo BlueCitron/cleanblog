@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout/main-layout">
+<head>
+    <title th:text="${post.title}"></title>
+</head>
+<body>
+
+<!-- Page Header -->
+<th:block layout:fragment="page-header">
+    <header class="masthead page-header"
+            th:style="'background-image: url(' + @{/upload/{imageFile}(imageFile=${post.headerImgUrl})} +')'">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h2 th:text="${post.title}"></h2>
+                        <span class="subheading" th:text="${post.subtitle}"></span>
+                        <span class="subheading"
+                              style="font-size: 14px;"
+                              th:text="${post.createdDate}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="d-flex justify-content-end">
+            <form id="formUpdate" th:action="@{/post/update/{id}(id=${post.id})}" th:method="get">
+                <button id="btnUpdate"
+                        type="submit"
+                        sec:authorize="hasRole('ROLE_ADMIN')"
+                        class="btn btn-sm btn-outline-success mx-4" style="z-index: 9999;">수정</button>
+            </form>
+            <form id="formDelete" th:action="@{/post/delete/{id}(id=${post.id})}" th:method="post">
+                <button id="btnDelete"
+                        type="button"
+                        sec:authorize="hasRole('ROLE_ADMIN')"
+                        class="btn btn-sm btn-outline-danger mx-4" style="z-index: 9999;">삭제</button>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div th:utext="${post.content}"></div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="page-custom-script">
+<script>
+    $(function() {
+        $('#btnUpdate').click(function() {
+            $('#formUpdate').submit();
+        });1
+        $('#btnDelete').click(function() {
+            $('#formDelete').submit();
+        });
+    });
+</script>
+</th:block>
+
+</body>
+</html>

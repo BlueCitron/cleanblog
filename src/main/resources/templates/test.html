@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout/main-layout">
+<head>
+    <title></title>
+</head>
+<body>
+
+<!-- Page Header -->
+<th:block layout:fragment="page-header">
+    <header class="masthead" style="background-image: url('/img/home-bg.jpg')">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h2>BlueCitron's Dev Log</h2>
+                        <span class="subheading">For Java, Node.js Developer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <h1>테스트화면</h1>
+                <input type="file" id="fileTag">
+                <button type="button" id="btnFile">클릭</button>
+                <img src="" id="preview">
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="page-custom-script">
+<script>
+$(function() {
+    $('#btnFile').click(function(){
+        var file = $('#fileTag')[0].files[0];
+
+        var formData = new FormData();
+        formData.append('file', file);
+        console.log(formData);
+
+        $.ajax({
+            type: 'post',
+            url: '/upload/image',
+            data: formData,
+            // dataType: 'text',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#preview').attr('src', 'upload/' + data.fileName);
+            }
+        });
+
+    });
+});
+</script>
+</th:block>
+
+</body>
+</html>

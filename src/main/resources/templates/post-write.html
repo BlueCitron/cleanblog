@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout/main-layout">
+<head>
+    <title>포스트 작성</title>
+</head>
+<body>
+
+<!-- Page Header -->
+<th:block layout:fragment="page-header">
+    <header class="masthead" style="background-image: url('/img/home-bg.jpg')">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h2>BlueCitron's Dev Log</h2>
+                        <span class="subheading">For Java, Node.js Developer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container">
+        <form id="postWriteForm" th:action="@{/post/create}" th:method="post">
+            <input type="hidden" name="categoryName">
+            <input type="hidden" name="title">
+            <input type="hidden" name="subtitle">
+            <input type="hidden" name="content">
+            <input type="hidden" name="headerImgUrl">
+        </form>
+            <div class="row my-3">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="btn-group">
+                        <input type="hidden" id="categoryName">
+                        <button id="btnCategory" type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            카테고리
+                        </button>
+                        <div class="dropdown-menu">
+                            <th:block th:each="category : ${categories}">
+                                <a class="dropdown-item category-item" href="#" th:text="${category.name}"></a>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <input type="text" id="postTitle" class="borderless-input" placeholder="제목을 입력하세요">
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <input type="text" id="postSubtitle" class="borderless-input" placeholder="부제목을 입력하세요">
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div id="summernote"></div>
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <h6>헤더 이미지 파일</h6>
+                    <div class="custom-file">
+                        <input type="file" id="headerImgFile" class="custom-file-input" aria-describedby="headerImgFile">
+                        <label class="custom-file-label" id="headerImgFileLabel" for="headerImgFile">Choose file</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary mx-3" id="btnWrite">작성하기</button>
+                        <button type="button" class="btn btn-secondary mx-3">돌아가기</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="page-custom-script">
+
+<script>
+$(function() {
+    initEditor();
+    addEventListener();
+});
+
+function initEditor() {
+    $('#summernote').summernote({
+        tabsize: 4,
+        height: 600,
+        toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'underline', 'clear']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture', 'video']],
+          ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+}
+
+function addEventListener() {
+    // 카테고리 클릭
+    $('.category-item').click(function() {
+        var categoryName = $(this).text();
+        $('#btnCategory').text(categoryName);
+        $('#categoryName').val(categoryName);
+    });
+
+    // 작성하기 클릭
+    $('#btnWrite').click(function(){
+        var categoryName = $('#categoryName').val();
+        var title = $('#postTitle').val();
+        var subtitle = $('#postSubtitle').val();
+        var content = $('#summernote').summernote('code');
+
+        if (!categoryName) {
+            alert('카테고리를 선택해주세요')
+            return;
+        }
+
+        if (!title) {
+            alert('제목을 입력해주세요');
+            return;
+        }
+
+        $('#postWriteForm>input[name=categoryName]').val(categoryName);
+        $('#postWriteForm>input[name=title]').val(title);
+        $('#postWriteForm>input[name=subtitle]').val(subtitle);
+        $('#postWriteForm>input[name=content]').val(content);
+        $('#postWriteForm').submit();
+    });
+
+    $('#headerImgFile').change(function(e) {
+        var { files } = e.target;
+        var imageFile = files[0];
+
+        var formData = new FormData();
+        formData.append('file', imageFile);
+
+        $.ajax({
+            type: 'post',
+            url: '/upload/image',
+            data: formData,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                var response = JSON.parse(data);
+                var { fileName } = response;
+                console.log(`Upload Success [fileName=${fileName}]`);
+                $('#postWriteForm>input[name=headerImgUrl]').val(fileName);
+                $('#headerImgUrl').val(fileName);
+                $('#headerImgFileLabel').text(fileName);
+            }
+        });
+    });
+}
+</script>
+</th:block>
+
+</body>
+</html>
