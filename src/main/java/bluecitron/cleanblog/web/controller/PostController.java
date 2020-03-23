@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @AllArgsConstructor
@@ -38,9 +39,10 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String detailView(Model model, @PathVariable Long id) {
-        PostDto post = postService.getOne(id);
-        model.addAttribute("post", post);
+    public String detailView(Model model, @PathVariable Long id, HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+        PostDto postDto = postService.viewPost(id, remoteAddr);
+        model.addAttribute("post", postDto);
         return "post-detail";
     }
 
