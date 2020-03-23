@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -16,14 +17,13 @@ import javax.persistence.Entity;
 @Entity
 public class PostViewer extends BaseTimeEntity {
 
+    @Id
     @EmbeddedId
     private PostViewerKey id;
 
     public PostViewer(Post post, String ip) {
         Long id = post.getId();
         this.id = new PostViewerKey(id, ip);
-        Integer viewCount = post.getViewCount();
-        post.setViewCount(viewCount + 1);
     }
 
     public PostViewer(PostViewerKey key) {

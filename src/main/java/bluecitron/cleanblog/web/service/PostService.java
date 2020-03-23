@@ -35,12 +35,12 @@ import static org.thymeleaf.util.StringUtils.isEmpty;
 @Service
 public class PostService {
 
-    CategoryService categoryService;
-    ModelMapper modelMapper;
+    private CategoryService categoryService;
+    private ModelMapper modelMapper;
 
-    PostRepository postRepository;
-    CategoryRepository categoryRepository;
-    PostViewerRepository postViewerRepository;
+    private PostRepository postRepository;
+    private CategoryRepository categoryRepository;
+    private PostViewerRepository postViewerRepository;
 
     public CommonListResponse getList(PostCommand command) {
         Integer page = command.getPage();
@@ -62,6 +62,7 @@ public class PostService {
     }
 
     public PostDto viewPost(Long postId, String ip) {
+
         Post post = getOneEntity(postId);
         increaseViewCount(post, ip);
 
@@ -79,8 +80,7 @@ public class PostService {
         }
         postRepository.save(post);
 
-
-
+        log.info("Post created. (title={})", post.getTitle());
     }
 
     public void update(Long postId, PostCommand command) {
@@ -112,10 +112,13 @@ public class PostService {
         PostViewerKey postViewerKey = new PostViewerKey(post.getId(), ip);
         PostViewer findPostViewer = postViewerRepository.findById(postViewerKey).orElse(null);
 
-        // 조회 기록 저장
+        // 조회 기록 저장 및 조회 수 증가
         if (isNull(findPostViewer)) {
             PostViewer postViewer = new PostViewer(postViewerKey);
             postViewerRepository.save(postViewer);
+
+            Integer viewCount = post.getViewCount();
+            post.setViewCount(viewCount + 1);
         }
     }
 
