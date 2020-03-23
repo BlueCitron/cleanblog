@@ -1,5 +1,7 @@
 HELP.md
 target/
+upload/*
+**/application-prod.yml
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
@@ -30,5 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-upload/*
-application-prod.yml
+
