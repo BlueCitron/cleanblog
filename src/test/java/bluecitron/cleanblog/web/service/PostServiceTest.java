@@ -1,6 +1,6 @@
 package bluecitron.cleanblog.web.service;
 
-import bluecitron.cleanblog.core.domain.Post;
+import bluecitron.cleanblog.core.domain.post.Post;
 import bluecitron.cleanblog.web.dto.CommonListResponse;
 import bluecitron.cleanblog.web.dto.command.PostCommand;
 import org.junit.jupiter.api.Assertions;
@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
