@@ -1,8 +1,7 @@
 package bluecitron.cleanblog.core.repository;
 
 import bluecitron.cleanblog.core.domain.Category;
-import bluecitron.cleanblog.core.domain.Post;
-import bluecitron.cleanblog.web.dto.command.PostCommand;
+import bluecitron.cleanblog.core.domain.post.Post;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

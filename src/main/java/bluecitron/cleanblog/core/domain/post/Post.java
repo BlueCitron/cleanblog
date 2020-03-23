@@ -1,5 +1,7 @@
-package bluecitron.cleanblog.core.domain;
+package bluecitron.cleanblog.core.domain.post;
 
+import bluecitron.cleanblog.core.domain.BaseTimeEntity;
+import bluecitron.cleanblog.core.domain.Category;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
