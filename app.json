@@ -4,6 +4,7 @@
     "cwd": ".",
     "args": [
       "-jar",
+      "-Dspring.profiles.active=prod",
       "/target/cleanblog-0.0.1-SNAPSHOT.jar" //여기에 war 파일 위치
     ],
     "env": {
