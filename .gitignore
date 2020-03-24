@@ -1,7 +1,10 @@
-HELP.md
+### user custom ###
 target/
 upload/*
 **/application-prod.yml
+logs/
+
+HELP.md
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
