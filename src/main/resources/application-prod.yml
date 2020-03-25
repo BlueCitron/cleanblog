@@ -1,3 +1,6 @@
+server:
+  port: 9400
+
 spring:
   prod:
     datasource:
@@ -5,3 +8,4 @@ spring:
       url: jdbc:mariadb://localhost:3306/cleanblogapp
       username: cleanblogapp
       password: cleanblogapp@123
+
