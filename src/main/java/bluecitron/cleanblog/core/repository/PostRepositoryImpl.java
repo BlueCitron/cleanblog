@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static bluecitron.cleanblog.core.domain.QPost.post;
+import static bluecitron.cleanblog.core.domain.post.QPost.post;
 import static java.util.Objects.nonNull;
 
 @AllArgsConstructor
@@ -34,6 +34,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetchResults();
         List<Post> content = postQueryResults.getResults();
         long total = postQueryResults.getTotal();
+
         return new PageImpl<>(content, pageable, total);
     }
 

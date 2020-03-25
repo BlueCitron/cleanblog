@@ -1,12 +1,10 @@
 package bluecitron.cleanblog.core.repository;
 
 import bluecitron.cleanblog.core.domain.Category;
-import bluecitron.cleanblog.core.domain.QCategory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
